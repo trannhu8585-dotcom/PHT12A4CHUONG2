@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phiếu Học Tập: Chương 2 - Carbohydrate (Hóa Học 12)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+        }
+
+        /* Printable A4 styles */
+        @page {
+            size: A4;
+            margin: 10mm 12mm;
+        }
+
+        @media print {
+            body {
+                background-color: #ffffff;
+                color: #000000;
+                font-size: 10pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .printable-card {
+                break-inside: avoid;
+            }
+            .fill-input {
+                border: none !important;
+                border-bottom: 1.5px dotted #475569 !important;
+                background: transparent !important;
+                box-shadow: none !important;
+            }
+            .fill-textarea {
+                border: 1px solid #cbd5e1 !important;
+                background: transparent !important;
+            }
+        }
+
+        /* Inline Input Styling for Fill-in-the-blanks */
+        .fill-input {
+            display: inline-block;
+            padding: 2px 8px;
+            margin: 0 2px;
+            border: 1.5px dashed #3b82f6;
+            border-radius: 6px;
+            background-color: #eff6ff;
+            color: #1e3a8a;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s ease;
+            font-size: 0.9em;
+        }
+
+        .fill-input:focus {
+            border-color: #2563eb;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .fill-textarea {
+            width: 100%;
+            padding: 8px 12px;
+            margin-top: 6px;
+            border: 1.5px dashed #3b82f6;
+            border-radius: 8px;
+            background-color: #eff6ff;
+            color: #0f172a;
+            outline: none;
+            resize: vertical;
+            font-size: 0.9em;
+            line-height: 1.5;
+            transition: all 0.2s ease;
+        }
+
+        .fill-textarea:focus {
+            border-color: #2563eb;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        body.student-submitted .fill-input,
+        body.student-submitted .fill-textarea,
+        body.student-submitted input,
+        body.student-submitted select {
+            background-color: #f8fafc !important;
+            border-style: solid !important;
+            border-color: #cbd5e1 !important;
+            color: #334155 !important;
+            cursor: not-allowed;
+        }
+
+        .progress-bar-fill {
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body class="p-2 md:p-6 min-h-screen">
+
+    <!-- TOP CONTROL TOOLBAR -->
+    <div class="no-print max-w-5xl mx-auto mb-6 bg-white p-4 rounded-2xl shadow-md border border-slate-200 sticky top-2 z-50">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <span class="bg-blue-600 text-white p-2.5 rounded-xl shadow-sm"><i class="fa-solid fa-graduation-cap text-xl"></i></span>
+                <div>
+                    <h1 class="font-bold text-slate-800 text-sm md:text-base">PHIẾU BÀI TẬP TỰ HỌC: CHƯƠNG 2 - CARBOHYDRATE</h1>
+                    <p class="text-xs text-blue-600 font-medium">💡 Tự nghiên cứu SGK & hoàn thành nhiệm vụ trước khi đến lớp.</p>
+                </div>
+            </div>
+            
+            <div class="flex flex-wrap items-center gap-2">
+                <button onclick="saveProgress()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold rounded-lg transition">
+                    💾 Lưu bài
+                </button>
+                <button onclick="window.print()" class="px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-semibold rounded-lg transition">
+                    🖨️ In phiếu (A4)
+                </button>
+                <button onclick="submitWork()" id="submitBtn" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition">
+                    📤 NỘP BÀI
+                </button>
+            </div>
+        </div>
+
+        <!-- Student Info & Deadline Section -->
+        <div class="mt-4 pt-3 border-t border-slate-100 grid grid-cols-1 md:grid-cols-12 gap-3 text-xs">
+            <div class="md:col-span-4 flex items-center gap-2">
+                <label class="font-semibold text-slate-600 whitespace-nowrap">Họ & tên:</label>
+                <input id="studentName" type="text" oninput="updateProgress()" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 outline-none focus:border-blue-500" placeholder="Nhập họ và tên học sinh">
+            </div>
+            <div class="md:col-span-3 flex items-center gap-2">
+                <label class="font-semibold text-slate-600 whitespace-nowrap">Lớp:</label>
+                <input id="studentClass" type="text" oninput="updateProgress()" class="w-full border border-slate-300 rounded-lg px-2.5 py-1.5 outline-none focus:border-blue-500" placeholder="VD: 12A1">
+            </div>
+            <div class="md:col-span-5 flex items-center justify-between bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5">
+                <span class="font-semibold text-amber-800 flex items-center gap-1">
+                    <i class="fa-solid fa-clock text-amber-600"></i> Hạn nộp:
+                </span>
+                <span id="countdown" class="font-mono font-bold text-amber-900">28/09/2026 23:59</span>
+                <input id="deadlineInput" type="datetime-local" onchange="setDeadline()" class="border border-amber-300 rounded px-1.5 py-0.5 text-xs bg-white">
+            </div>
+        </div>
+
+        <!-- Completion Progress Bar -->
+        <div class="mt-3 flex items-center gap-3">
+            <div class="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
+                <div id="progressBar" class="bg-blue-600 h-full progress-bar-fill" style="width: 0%"></div>
+            </div>
+            <span id="progressText" class="text-xs font-semibold text-slate-500 min-w-[70px] text-right">0% hoàn thành</span>
+        </div>
+    </div>
+
+    <!-- MAIN WORKSHEET CONTAINER -->
+    <div id="worksheet" class="max-w-5xl mx-auto bg-white p-6 md:p-10 shadow-xl rounded-2xl border border-slate-200">
+        
+        <!-- HEADER / STUDENT INFO PRINT SECTION -->
+        <div class="border-b-2 border-blue-900 pb-4 mb-6">
+            <div class="grid grid-cols-12 gap-4 items-center">
+                <div class="col-span-4 text-center border-r border-slate-300 pr-2">
+                    <p class="font-bold text-xs md:text-sm text-slate-700 uppercase tracking-wide">Trường THPT: .............................</p>
+                    <p class="font-bold text-xs md:text-sm text-blue-900 uppercase">Tổ Hóa Học</p>
+                    <p class="text-[11px] text-slate-500 italic mt-0.5">Môn Hóa học 12 – Chương trình GDPT 2018</p>
+                </div>
+                <div class="col-span-8 text-center pl-2">
+                    <h1 class="text-xl md:text-2xl font-black text-blue-950 uppercase tracking-wide">PHIẾU HỌC TẬP TỰ HỌC Ở NHÀ</h1>
+                    <h2 class="text-sm md:text-base font-bold text-blue-800 uppercase mt-0.5">CHƯƠNG 2: CARBOHYDRATE</h2>
+                </div>
+            </div>
+
+            <!-- Print Info Row -->
+            <div class="mt-4 pt-3 border-t border-dashed border-slate-300 grid grid-cols-12 gap-3 text-xs">
+                <div class="col-span-5 flex items-center">
+                    <span class="font-semibold text-slate-700 mr-2">Họ và tên:</span>
+                    <span id="printName" class="flex-1 border-b border-dotted border-slate-600 font-medium text-blue-900 px-2">....................................................................</span>
+                </div>
+                <div class="col-span-3 flex items-center">
+                    <span class="font-semibold text-slate-700 mr-2">Lớp:</span>
+                    <span id="printClass" class="flex-1 border-b border-dotted border-slate-600 font-medium text-blue-900 px-2">............</span>
+                </div>
+                <div class="col-span-4 flex items-center">
+                    <span class="font-semibold text-slate-700 mr-2">Hạn nộp:</span>
+                    <span id="printDeadline" class="flex-1 border-b border-dotted border-slate-600 font-medium text-blue-900 px-2">28/09/2026 23:59</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN A: THÔNG TIN ĐỌC HIỂU SGK DẠNG ĐIỀN KHUYẾT -->
+        <!-- ========================================================================= -->
+        <section class="mb-8">
+            <div class="bg-blue-900 text-white px-4 py-2.5 rounded-t-xl font-bold text-sm md:text-base flex items-center gap-2">
+                <i class="fa-solid fa-book-open"></i> PHẦN A: ĐỌC HIỂU TỰ HỌC SGK (ĐIỀN TỪ KHÓA)
+            </div>
+            <div class="border-2 border-t-0 border-blue-900 p-4 rounded-b-xl bg-slate-50/50 text-xs md:text-sm leading-relaxed space-y-5">
+                
+                <!-- I. GIỚI THIỆU CARBOHYDRATE -->
+                <div>
+                    <h3 class="font-bold text-blue-900 uppercase border-b border-blue-200 pb-1 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-caret-right text-blue-600"></i> I. Khái niệm và Phân loại Carbohydrate
+                    </h3>
+                    <p class="mb-2">
+                        <strong>1. Khái niệm:</strong> Carbohydrate là những hợp chất hữu cơ 
+                        <input type="text" class="fill-input w-28 text-center" placeholder="..." data-key="a1">, 
+                        thường có công thức chung là $\text{C}_n(\text{H}_2\text{O})_m$.
+                    </p>
+                    <p class="mb-2"><strong>2. Phân loại:</strong> Dựa vào phản ứng thủy phân, carbohydrate được chia làm 3 nhóm chính:</p>
+                    <ul class="list-disc list-inside space-y-1.5 pl-2 text-slate-800">
+                        <li>
+                            <strong>Monosaccharide:</strong> Là nhóm carbohydrate đơn giản nhất, 
+                            <input type="text" class="fill-input w-36 text-center" placeholder="..." data-key="a2">. 
+                            Ví dụ: Glucose và Fructose (đều có CTPT là <input type="text" class="fill-input w-28 text-center" placeholder="..." data-key="a3">).
+                        </li>
+                        <li>
+                            <strong>Disaccharide:</strong> Khi thủy phân hoàn toàn mỗi phân tử tạo ra 
+                            <input type="text" class="fill-input w-20 text-center" placeholder="..." data-key="a4"> phân tử monosaccharide. 
+                            Ví dụ: Saccharose, Maltose (CTPT là <input type="text" class="fill-input w-32 text-center" placeholder="..." data-key="a5">).
+                        </li>
+                        <li>
+                            <strong>Polysaccharide:</strong> Khi thủy phân hoàn toàn tạo ra 
+                            <input type="text" class="fill-input w-32 text-center" placeholder="..." data-key="a6"> phân tử monosaccharide. 
+                            Ví dụ: Tinh bột, Cellulose (CTPT chung là <input type="text" class="fill-input w-32 text-center" placeholder="..." data-key="a7">).
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- II. TÍNH CHẤT VẬT LÍ & TRẠNG THÁI TỰ NHIÊN -->
+                <div>
+                    <h3 class="font-bold text-blue-900 uppercase border-b border-blue-200 pb-1 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-caret-right text-blue-600"></i> II. Tính chất vật lí & Trạng thái tự nhiên
+                    </h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-xs text-left border-collapse border border-slate-300 bg-white rounded-lg">
+                            <thead>
+                                <tr class="bg-blue-100 text-blue-900 font-bold border-b border-slate-300">
+                                    <th class="p-2 border border-slate-300 w-1/6">Tên chất</th>
+                                    <th class="p-2 border border-slate-300 w-2/5">Tính chất vật lí đặc trưng</th>
+                                    <th class="p-2 border border-slate-300">Trạng thái tự nhiên</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-2 border border-slate-300 font-bold text-blue-950">Glucose</td>
+                                    <td class="p-2 border border-slate-300">Chất rắn, màu trắng, vị ngọt, tan tốt trong nước.</td>
+                                    <td class="p-2 border border-slate-300">
+                                        Có nhiều trong quả chín (đặc biệt là <input type="text" class="fill-input w-24 text-center" placeholder="..." data-key="a8">). 
+                                        Trong máu người nồng độ ổn định khoảng <input type="text" class="fill-input w-28 text-center" placeholder="..." data-key="a9">.
+                                    </td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="p-2 border border-slate-300 font-bold text-blue-950">Fructose</td>
+                                    <td class="p-2 border border-slate-300">
+                                        Chất rắn tinh thể, có vị ngọt <input type="text" class="fill-input w-28 text-center" placeholder="..." data-key="a10">, dễ tan trong nước.
+                                    </td>
+                                    <td class="p-2 border border-slate-300">
+                                        Có nhiều trong quả ngọt, chiếm khoảng <input type="text" class="fill-input w-16 text-center" placeholder="..." data-key="a11"> khối lượng mật ong.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-slate-300 font-bold text-blue-950">Saccharose</td>
+                                    <td class="p-2 border border-slate-300">Chất rắn tinh thể không màu, vị ngọt thanh, dễ tan trong nước.</td>
+                                    <td class="p-2 border border-slate-300">
+                                        Có nhiều trong <input type="text" class="fill-input w-48 text-center" placeholder="..." data-key="a12">.
+                                    </td>
+                                </tr>
+                                <tr class="bg-slate-50">
+                                    <td class="p-2 border border-slate-300 font-bold text-blue-950">Tinh bột</td>
+                                    <td class="p-2 border border-slate-300">
+                                        Chất rắn, màu trắng, <input type="text" class="fill-input w-36 text-center" placeholder="..." data-key="a13">, tan trong nước nóng tạo hồ tinh bột.
+                                    </td>
+                                    <td class="p-2 border border-slate-300">Tích trữ ở các hạt (lúa, ngô), củ (khoai, sắn), quả xanh.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-2 border border-slate-300 font-bold text-blue-950">Cellulose</td>
+                                    <td class="p-2 border border-slate-300">Chất rắn, màu trắng, dạng sợi, không tan trong nước và dung môi thông thường.</td>
+                                    <td class="p-2 border border-slate-300">
+                                        Cấu tạo nên màng tế bào thực vật; có nhiều trong <input type="text" class="fill-input w-40 text-center" placeholder="..." data-key="a14">.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- III. ĐẶC ĐIỂM CẤU TẠO PHÂN TỬ -->
+                <div>
+                    <h3 class="font-bold text-blue-900 uppercase border-b border-blue-200 pb-1 mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-caret-right text-blue-600"></i> III. Đặc điểm Cấu tạo Phân tử
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 shadow-2xs">
+                            <p class="font-semibold text-slate-900 mb-1">1. Glucose ($\text{C}_6\text{H}_{12}\text{O}_6$):</p>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                • Mạch hở: chứa <input type="text" class="fill-input w-16 text-center" placeholder="..." data-key="a15"> nhóm hydroxy ($-\text{OH}$) kề nhau và <input type="text" class="fill-input w-16 text-center" placeholder="..." data-key="a16"> nhóm aldehyde ($-\text{CHO}$).<br>
+                                • Mạch vòng: trong dung dịch tồn tại chủ yếu ở dạng vòng 6 cạnh ($\alpha\text{-glucose}$ và $\beta\text{-glucose}$).
+                            </p>
+                        </div>
+
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 shadow-2xs">
+                            <p class="font-semibold text-slate-900 mb-1">2. Saccharose ($\text{C}_{12}\text{H}_{22}\text{O}_{11}$):</p>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                Được cấu tạo từ 1 gốc <input type="text" class="fill-input w-28 text-center" placeholder="..." data-key="a17"> và 1 gốc <input type="text" class="fill-input w-28 text-center" placeholder="..." data-key="a18"> qua liên kết $\alpha\text{-1,2-glycoside}$. Phân tử <input type="text" class="fill-input w-24 text-center" placeholder="..." data-key="a19"> nhóm $-\text{OH}$ hemiacetal tự do nên không có tính chất aldehyde.
+                            </p>
+                        </div>
+
+                        <div class="p-3 bg-white rounded-lg border border-slate-200 shadow-2xs">
+                            <p class="font-semibold text-slate-900 mb-1">3. Tinh bột & Cellulose ($(\text{C}_6\text{H}_{10}\text{O}_5)_n$):</p>
+                            <p class="text-xs text-slate-700 leading-relaxed">
+                                • Tinh bột gồm 2 thành phần: <em>amylose</em> (mạch <input type="text" class="fill-input w-28 text-center" placeholder="..." data-key="a20">, xoắn lại) và <em>amylopectin</em> (mạch <input type="text" class="fill-input w-28 text-center" placeholder="..." data-key="a21">).<br>
+                                • Cellulose là polymer mạch <input type="text" class="fill-input w-20 text-center" placeholder="..." data-key="a22"> không phân nhánh, do các gốc $\beta\text{-glucose}$ liên kết với nhau. Mỗi mắt xích có <input type="text" class="fill-input w-16 text-center" placeholder="..." data-key="a23"> nhóm $-\text{OH}$ tự do $\rightarrow [\text{C}_6\text{H}_7\text{O}_2(\text{OH})_3]_n$.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN B: CÂU HỎI & BÀI TẬP PHÁT TRIỂN NĂNG LỰC -->
+        <!-- ========================================================================= -->
+        <section class="space-y-6">
+            <div class="bg-blue-900 text-white px-4 py-2.5 rounded-t-xl font-bold text-sm md:text-base flex items-center gap-2">
+                <i class="fa-solid fa-pen-ruler"></i> PHẦN B: CÂU HỎI & BÀI TẬP THỰC HÀNH
+            </div>
+
+            <!-- 1. CÂU HỎI KHỞI ĐỘNG -->
+            <div class="printable-card border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
+                <div class="flex items-center gap-2 text-blue-900 font-bold border-b pb-2 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-900 text-white flex items-center justify-center text-xs">1</span>
+                    <h3 class="uppercase text-xs md:text-sm">CÂU HỎI KHỞI ĐỘNG (Ghép nối & Phân loại)</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <!-- Câu 1.1 -->
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <p class="font-semibold text-slate-800 mb-2">Câu 1.1: Ghép nối tên chất ở Cột A với ứng dụng/đặc điểm ở Cột B:</p>
+                        <table class="w-full text-left border border-slate-300 bg-white mb-3">
+                            <thead>
+                                <tr class="bg-slate-100 font-bold">
+                                    <th class="p-1.5 border border-slate-300 w-1/3">Cột A</th>
+                                    <th class="p-1.5 border border-slate-300">Cột B</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-300 font-medium">1. Glucose</td>
+                                    <td class="p-1.5 border border-slate-300">a. Đường ngọt nhất, có nhiều trong mật ong.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-300 font-medium">2. Fructose</td>
+                                    <td class="p-1.5 border border-slate-300">b. Truyền dịch dinh dưỡng trong y tế (nồng độ 5%).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-300 font-medium">3. Cellulose</td>
+                                    <td class="p-1.5 border border-slate-300">c. Sản xuất thuốc súng không khói, tơ nhân tạo.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold text-slate-700">Ghép cặp:</span>
+                            <input type="text" class="fill-input flex-1 text-center" placeholder="Nhập đáp án ghép cặp..." data-key="b1_1">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================================= -->
+        <!-- PHẦN B: CÂU HỎI & BÀI TẬP PHÁT TRIỂN NĂNG LỰC -->
+        <!-- ========================================================================= -->
+        <section class="space-y-6">
+            <div class="bg-blue-900 text-white px-4 py-2.5 rounded-t-xl font-bold text-sm md:text-base flex items-center gap-2">
+                <i class="fa-solid fa-pen-ruler"></i> PHẦN B: CÂU HỎI & BÀI TẬP THỰC HÀNH
+            </div>
+
+            <!-- 1. CÂU HỎI KHỞI ĐỘNG -->
+            <div class="printable-card border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
+                <div class="flex items-center gap-2 text-blue-900 font-bold border-b pb-2 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-900 text-white flex items-center justify-center text-xs">1</span>
+                    <h3 class="uppercase text-xs md:text-sm">CÂU HỎI KHỞI ĐỘNG (Ghép nối & Phân loại)</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <!-- Câu 1.1 -->
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                        <p class="font-semibold text-slate-800 mb-2">Câu 1.1: Ghép nối tên chất ở Cột A với ứng dụng/đặc điểm ở Cột B:</p>
+                        <table class="w-full text-left border border-slate-300 bg-white mb-3">
+                            <thead>
+                                <tr class="bg-slate-100 font-bold">
+                                    <th class="p-1.5 border border-slate-300 w-1/3">Cột A</th>
+                                    <th class="p-1.5 border border-slate-300">Cột B</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-300 font-medium">1. Glucose</td>
+                                    <td class="p-1.5 border border-slate-300">a. Đường ngọt nhất, có nhiều trong mật ong.</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-300 font-medium">2. Fructose</td>
+                                    <td class="p-1.5 border border-slate-300">b. Truyền dịch dinh dưỡng trong y tế (nồng độ 5%).</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-1.5 border border-slate-300 font-medium">3. Cellulose</td>
+                                    <td class="p-1.5 border border-slate-300">c. Sản xuất thuốc súng không khói, tơ nhân tạo.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="flex items-center gap-2">
+                            <span class="font-semibold text-slate-700">Ghép cặp:</span>
+                            <input type="text" class="fill-input flex-1 text-center" placeholder="VD: 1-b, 2-a, 3-c" data-key="b1_1">
+                        </div>
+                    </div>
+
+                    <!-- Câu 1.2 -->
+                    <div class="p-3 bg-slate-50 rounded-lg border border-slate-200 flex flex-col justify-between">
+                        <div>
+                            <p class="font-semibold text-slate-800 mb-2">Câu 1.2: Cho các chất: Glucose, Fructose, Saccharose, Tinh bột, Cellulose.</p>
+                            <div class="space-y-2">
+                                <div>
+                                    <p class="text-slate-700 font-medium">a) Chất tham gia phản ứng tráng bạc:</p>
+                                    <input type="text" class="fill-input w-full mt-1" placeholder="Nhập tên các chất..." data-key="b1_2a">
+                                </div>
+                                <div>
+                                    <p class="text-slate-700 font-medium">b) Chất bị thủy phân trong môi trường acid:</p>
+                                    <input type="text" class="fill-input w-full mt-1" placeholder="Nhập tên các chất..." data-key="b1_2b">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. CÂU HỎI KHÁM PHÁ (Mô hình & Thí nghiệm) -->
+            <div class="printable-card border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
+                <div class="flex items-center gap-2 text-blue-900 font-bold border-b pb-2 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-900 text-white flex items-center justify-center text-xs">2</span>
+                    <h3 class="uppercase text-xs md:text-sm">CÂU HỎI KHÁM PHÁ (Phân tích Thí nghiệm)</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                    <!-- Thí nghiệm 1 -->
+                    <div class="p-3 border border-slate-200 rounded-xl bg-slate-50/50 flex flex-col justify-between">
+                        <div>
+                            <p class="font-bold text-slate-800 mb-2">Thí nghiệm 1: Phản ứng tráng bạc của Glucose</p>
+                            
+                            <!-- SVG Diagram -->
+                            <div class="w-full flex justify-center my-2 bg-white p-2 rounded-lg border border-slate-200">
+                                <svg width="260" height="95" viewBox="0 0 260 95" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect width="260" height="95" fill="#F8FAFC" rx="6"/>
+                                    <!-- Test Tube 1 -->
+                                    <rect x="25" y="15" width="18" height="55" rx="8" stroke="#475569" stroke-width="2" fill="#E2E8F0"/>
+                                    <path d="M25 45 C25 45 34 50 43 45 L43 62 C43 67 34 70 25 67 Z" fill="#93C5FD" opacity="0.7"/>
+                                    <text x="34" y="82" text-anchor="middle" font-size="8" font-weight="bold" fill="#1E3A8A">Thuốc thử Tollens</text>
+                                    <!-- Arrow -->
+                                    <path d="M55 42 L80 42" stroke="#2563EB" stroke-width="1.5"/>
+                                    <text x="67" y="35" text-anchor="middle" font-size="7" fill="#1D4ED8">+ Glucose, t°</text>
+                                    <!-- Test Tube 2 -->
+                                    <rect x="90" y="15" width="18" height="55" rx="8" stroke="#334155" stroke-width="2" fill="#94A3B8"/>
+                                    <rect x="90" y="15" width="18" height="55" rx="8" stroke="#000" stroke-width="1" fill="none"/>
+                                    <text x="99" y="82" text-anchor="middle" font-size="8" font-weight="bold" fill="#0F172A">Lớp Ag sáng bóng</text>
+                                    <!-- Starch Iodine Illustration -->
+                                    <circle cx="195" cy="42" r="25" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="3 2" fill="#DCFCE7"/>
+                                    <text x="195" y="40" text-anchor="middle" font-size="8" font-weight="bold" fill="#15803D">Hồ tinh bột + I₂</text>
+                                    <text x="195" y="50" text-anchor="middle" font-size="7" fill="#166534">(Màu xanh tím)</text>
+                                </svg>
+                            </div>
+
+                            <p class="text-slate-700 leading-relaxed mb-2">
+                                <strong>Câu hỏi:</strong> Cho biết hiện tượng xảy ra trên thành ống nghiệm sau phản ứng và viết phương trình hóa học chứng minh tính chất aldehyde của glucose.
+                            </p>
+                        </div>
+                        <div>
+                            <textarea class="fill-textarea" rows="3" placeholder="Trình bày hiện tượng và viết PTHH dạng tổng quát..." data-key="b2_1"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Thí nghiệm 2 -->
+                    <div class="p-3 border border-slate-200 rounded-xl bg-slate-50/50 flex flex-col justify-between">
+                        <div>
+                            <p class="font-bold text-slate-800 mb-2">Thí nghiệm 2: Phản ứng màu của Hồ tinh bột với Iodine</p>
+                            <p class="text-slate-700 leading-relaxed mb-2">
+                                Cho vài giọt dung dịch Iodine ($\text{I}_2$) vào ống nghiệm chứa $2\text{ mL}$ hồ tinh bột ở nhiệt độ thường. Đun nóng nhẹ ống nghiệm, sau đó để nguội.
+                            </p>
+                            <p class="font-semibold text-slate-800 mt-2">Nêu hiện tượng và giải thích cơ chế biến đổi màu:</p>
+                        </div>
+                        <div>
+                            <textarea class="fill-textarea" rows="4" placeholder="• Ở nhiệt độ thường:... &#10;• Khi đun nóng:... &#10;• Khi để nguội:..." data-key="b2_2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. CÂU HỎI LUYỆN TẬP -->
+            <div class="printable-card border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
+                <div class="flex items-center gap-2 text-blue-900 font-bold border-b pb-2 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-900 text-white flex items-center justify-center text-xs">3</span>
+                    <h3 class="uppercase text-xs md:text-sm">CÂU HỎI LUYỆN TẬP (Trắc nghiệm Đúng/Sai & Viết PTHH)</h3>
+                </div>
+
+                <div class="space-y-4 text-xs">
+                    <!-- Trắc nghiệm Đúng / Sai -->
+                    <div>
+                        <p class="font-semibold text-slate-800 mb-2">Câu 3.1: Đánh dấu vào cột Chọn (Đúng/Sai) cho các phát biểu sau:</p>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse border border-slate-300 bg-white">
+                                <thead>
+                                    <tr class="bg-slate-100 font-bold border-b border-slate-300">
+                                        <th class="p-2 border border-slate-300 w-12 text-center">STT</th>
+                                        <th class="p-2 border border-slate-300">Nội dung phát biểu</th>
+                                        <th class="p-2 border border-slate-300 text-center w-24">Chọn</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="p-2 border border-slate-300 text-center">1</td>
+                                        <td class="p-2 border border-slate-300">Glucose và Fructose là hai chất đồng phân cấu tạo của nhau.</td>
+                                        <td class="p-2 border border-slate-300 text-center">
+                                            <select class="border rounded px-1 py-0.5 outline-none font-semibold" data-key="tf1">
+                                                <option value="">--</option>
+                                                <option value="Đúng">Đúng</option>
+                                                <option value="Sai">Sai</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-2 border border-slate-300 text-center">2</td>
+                                        <td class="p-2 border border-slate-300">Tinh bột và Cellulose là đồng phân của nhau vì đều có CTPT là $(\text{C}_6\text{H}_{10}\text{O}_5)_n$.</td>
+                                        <td class="p-2 border border-slate-300 text-center">
+                                            <select class="border rounded px-1 py-0.5 outline-none font-semibold" data-key="tf2">
+                                                <option value="">--</option>
+                                                <option value="Đúng">Đúng</option>
+                                                <option value="Sai">Sai</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-2 border border-slate-300 text-center">3</td>
+                                        <td class="p-2 border border-slate-300">Có thể dùng nước bromine ($\text{Br}_2$) để phân biệt dung dịch Glucose và Fructose.</td>
+                                        <td class="p-2 border border-slate-300 text-center">
+                                            <select class="border rounded px-1 py-0.5 outline-none font-semibold" data-key="tf3">
+                                                <option value="">--</option>
+                                                <option value="Đúng">Đúng</option>
+                                                <option value="Sai">Sai</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="bg-slate-50">
+                                        <td class="p-2 border border-slate-300 text-center">4</td>
+                                        <td class="p-2 border border-slate-300">Cellulose trinitrate được điều chế từ cellulose và $\text{HNO}_3$ đặc, dùng làm thuốc súng không khói.</td>
+                                        <td class="p-2 border border-slate-300 text-center">
+                                            <select class="border rounded px-1 py-0.5 outline-none font-semibold" data-key="tf4">
+                                                <option value="">--</option>
+                                                <option value="Đúng">Đúng</option>
+                                                <option value="Sai">Sai</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Viết Phương Trình Hóa Học -->
+                    <div>
+                        <p class="font-semibold text-slate-800 mb-2">Câu 3.2: Hoàn thành các phương trình hóa học sau (ghi rõ điều kiện nếu có):</p>
+                        <div class="space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <span>a) $\text{C}_6\text{H}_{12}\text{O}_6 \xrightarrow{\text{lên men rượu, } 30-35^\circ\text{C}}$</span>
+                                <input type="text" class="fill-input flex-1 min-w-[200px]" placeholder="Điền sản phẩm..." data-key="eq1">
+                            </div>
+                            <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-200">
+                                <span>b) $\text{C}_{12}\text{H}_{22}\text{O}_{11} + \text{H}_2\text{O} \xrightarrow{\text{H}^+, t^\circ}$</span>
+                                <input type="text" class="fill-input flex-1 min-w-[200px]" placeholder="Điền sản phẩm..." data-key="eq2">
+                            </div>
+                            <div class="flex flex-wrap items-center gap-1.5 pt-2 border-t border-slate-200">
+                                <span>c) $[\text{C}_6\text{H}_7\text{O}_2(\text{OH})_3]_n + 3n\text{HNO}_3 \xrightarrow{\text{H}_2\text{SO}_4 \text{ đặc}, t^\circ}$</span>
+                                <input type="text" class="fill-input flex-1 min-w-[200px]" placeholder="Điền sản phẩm..." data-key="eq3">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. BÀI TẬP THỬ THÁCH (Tính toán Hóa học) -->
+            <div class="printable-card border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
+                <div class="flex items-center gap-2 text-blue-900 font-bold border-b pb-2 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-900 text-white flex items-center justify-center text-xs">4</span>
+                    <h3 class="uppercase text-xs md:text-sm">CÂU HỎI THỬ THÁCH (Bài toán tính toán)</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <!-- Bài toán 4.1 -->
+                    <div class="p-3 border border-amber-200 rounded-xl bg-amber-50/40 flex flex-col justify-between">
+                        <div>
+                            <p class="font-bold text-amber-900 mb-1">Bài 4.1: Sản xuất Ethanol từ Tinh bột</p>
+                            <p class="text-slate-700 leading-relaxed mb-2">
+                                Từ $100\text{ kg}$ hạt ngô chứa $64.8\%$ tinh bột về khối lượng, tiến hành thủy phân rồi lên men rượu thu được ethanol. Biết hiệu suất của toàn bộ quá trình đạt $80\%$. Tính khối lượng Ethanol thu được.
+                            </p>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-amber-900 block mb-1">Lời giải chi tiết:</label>
+                            <textarea class="fill-textarea bg-white" rows="5" placeholder="1. Tính m_tinh bột = ... &#10;2. Viết sơ đồ phản ứng... &#10;3. Tính m_ethanol thu được theo hiệu suất H=80%..." data-key="calc1"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Bài toán 4.2 -->
+                    <div class="p-3 border border-amber-200 rounded-xl bg-amber-50/40 flex flex-col justify-between">
+                        <div>
+                            <p class="font-bold text-amber-900 mb-1">Bài 4.2: Điều chế Thuốc súng không khói</p>
+                            <p class="text-slate-700 leading-relaxed mb-2">
+                                Cho $29.16\text{ kg}$ cellulose tác dụng với lượng dư $\text{HNO}_3$ đặc (xúc tác $\text{H}_2\text{SO}_4$ đặc, $t^\circ$) thu được $m\text{ kg}$ cellulose trinitrate. Biết hiệu suất phản ứng đạt $90\%$. Tính giá trị của $m$.
+                            </p>
+                        </div>
+                        <div>
+                            <label class="font-semibold text-amber-900 block mb-1">Lời giải chi tiết:</label>
+                            <textarea class="fill-textarea bg-white" rows="5" placeholder="1. Tính n_mắt xích cellulose = ... &#10;2. Sơ đồ điều chế... &#10;3. Tính m_cellulose trinitrate theo hiệu suất H=90%..." data-key="calc2"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. CÂU HỎI VẬN DỤNG THỰC TIỄN -->
+            <div class="printable-card border border-slate-200 rounded-xl p-4 bg-white shadow-sm">
+                <div class="flex items-center gap-2 text-blue-900 font-bold border-b pb-2 mb-3">
+                    <span class="w-6 h-6 rounded-full bg-blue-900 text-white flex items-center justify-center text-xs">5</span>
+                    <h3 class="uppercase text-xs md:text-sm">VẬN DỤNG THỰC TIỄN & GIẢI QUYẾT VẤN ĐỀ</h3>
+                </div>
+
+                <div class="space-y-3 text-xs">
+                    <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-200">
+                        <p class="font-bold text-emerald-900 mb-1">Tình huống 5.1: Giải thích hiện tượng "Nhai kỹ cơm thấy có vị ngọt"</p>
+                        <p class="text-slate-700 mb-2">Khi ăn cơm (thành phần chính là tinh bột), nếu nhai kỹ trong miệng ta cảm nhận được vị ngọt nhẹ. Hãy giải thích cơ sở sinh hóa của hiện tượng này.</p>
+                        <textarea class="fill-textarea bg-white" rows="3" placeholder="Giải thích tác dụng của enzyme amylase trong nước bọt..." data-key="app1"></textarea>
+                    </div>
+
+                    <div class="p-3 bg-emerald-50/50 rounded-xl border border-emerald-200">
+                        <p class="font-bold text-emerald-900 mb-1">Tình huống 5.2: Khả năng tiêu hóa Cellulose ở Động vật ăn cỏ</p>
+                        <p class="text-slate-700 mb-2">Vì sao con người không thể tiêu hóa được xơ thực vật (cellulose) để tạo năng lượng, nhưng các loài động vật ăn cỏ (trâu, bò) lại có thể sử dụng cỏ làm nguồn thức ăn chính?</p>
+                        <textarea class="fill-textarea bg-white" rows="3" placeholder="Giải thích dựa trên sự xuất hiện của enzyme cellulase trong hệ tiêu hóa..." data-key="app2"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. FLASHCARD TỔNG HỢP GHI NHỚ -->
+            <div class="printable-card border-2 border-blue-900 rounded-xl p-4 bg-blue-50/30">
+                <div class="flex items-center gap-2 text-blue-900 font-bold border-b border-blue-200 pb-2 mb-3">
+                    <i class="fa-solid fa-star text-amber-500"></i>
+                    <h3 class="uppercase text-xs md:text-sm">GHI NHỚ CỐT LÕI (CHƯƠNG 2)</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                    <div class="p-3 bg-white rounded-xl border border-blue-200 shadow-2xs">
+                        <p class="font-bold text-blue-900 mb-1">Monosaccharide</p>
+                        <p class="text-slate-700">• Glucose & Fructose ($\text{C}_6\text{H}_{12}\text{O}_6$)</p>
+                        <p class="text-slate-600 italic">• Glucose làm mất màu nước $\text{Br}_2$.</p>
+                        <p class="text-slate-600 italic">• Cả hai đều tráng bạc và tạo dung dịch xanh lam với $\text{Cu}(\text{OH})_2$.</p>
+                    </div>
+
+                    <div class="p-3 bg-white rounded-xl border border-blue-200 shadow-2xs">
+                        <p class="font-bold text-blue-900 mb-1">Disaccharide</p>
+                        <p class="text-slate-700">• Saccharose ($\text{C}_{12}\text{H}_{22}\text{O}_{11}$)</p>
+                        <p class="text-slate-600 italic">• KHÔNG có phản ứng tráng bạc.</p>
+                        <p class="text-slate-600 italic">• Thủy phân cho 1 Glucose + 1 Fructose.</p>
+                    </div>
+
+                    <div class="p-3 bg-white rounded-xl border border-blue-200 shadow-2xs">
+                        <p class="font-bold text-blue-900 mb-1">Polysaccharide</p>
+                        <p class="text-slate-700">• Tinh bột & Cellulose ($(\text{C}_6\text{H}_{10}\text{O}_5)_n$)</p>
+                        <p class="text-slate-600 italic">• Tinh bột phản ứng tạo màu xanh tím với $\text{I}_2$.</p>
+                        <p class="text-slate-600 italic">• Cellulose phản ứng với $\text{HNO}_3$ đặc tạo thuốc súng không khói.</p>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+        <div class="mt-8 pt-4 border-t border-slate-300 text-center text-xs text-slate-500 flex flex-col md:flex-row justify-between items-center gap-2">
+            <span>Phiếu Học Tập Hóa Học 12 – Chương 2: Carbohydrate</span>
+            <span class="font-semibold text-blue-900">Chúc các em học tập tốt và hoàn thành xuất sắc nhiệm vụ!</span>
+            <span>Khổ giấy A4</span>
+        </div>
+
+    </div>
+
+    <!-- SCRIPT TƯƠNG TÁC HỌC SINH -->
+    <script>
+        const STORAGE_KEY = 'carbohydrate_worksheet_data_v1';
+        const DEADLINE_KEY = 'carbohydrate_worksheet_deadline_v1';
+        const DEFAULT_DEADLINE = '2026-09-28T23:59'; // Hạn nộp mặc định: 28/09/2026 23:59
+        let isSubmitted = false;
+        let countdownTimer = null;
+
+        // Synchronize Info to Print View
+        function syncPrintInfo() {
+            const name = document.getElementById('studentName').value.trim();
+            const className = document.getElementById('studentClass').value.trim();
+            document.getElementById('printName').textContent = name || '....................................................................';
+            document.getElementById('printClass').textContent = className || '............';
+        }
+
+        function formatDateTime(isoStr) {
+            if (!isoStr) return '28/09/2026 23:59';
+            const d = new Date(isoStr);
+            if (isNaN(d.getTime())) return '28/09/2026 23:59';
+            return d.toLocaleString('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function setDeadline() {
+            const input = document.getElementById('deadlineInput');
+            if (!input.value) return;
+            const selectedDate = new Date(input.value);
+            if (isNaN(selectedDate.getTime())) return;
+            
+            localStorage.setItem(DEADLINE_KEY, selectedDate.toISOString());
+            updateDeadlineUI();
+        }
+
+        function updateDeadlineUI() {
+            let savedDeadline = localStorage.getItem(DEADLINE_KEY);
+            if (!savedDeadline) {
+                savedDeadline = new Date(DEFAULT_DEADLINE).toISOString();
+            }
+
+            const countdownEl = document.getElementById('countdown');
+            const printDeadlineEl = document.getElementById('printDeadline');
+            const submitBtn = document.getElementById('submitBtn');
+
+            printDeadlineEl.textContent = formatDateTime(savedDeadline);
+            const deadlineTime = new Date(savedDeadline).getTime();
+            const now = Date.now();
+            const diff = deadlineTime - now;
+
+            if (diff <= 0) {
+                countdownEl.textContent = '⛔ ĐÃ HẾT HẠN';
+                countdownEl.className = 'font-mono font-bold text-red-600';
+                if (!isSubmitted) {
+                    submitBtn.disabled = true;
+                    submitBtn.className = 'px-4 py-2 bg-slate-400 text-white text-xs font-bold rounded-lg cursor-not-allowed';
+                    submitBtn.title = 'Đã hết thời gian nộp bài';
+                }
+                return;
+            }
+
+            const totalSec = Math.floor(diff / 1000);
+            const days = Math.floor(totalSec / 86400);
+            const hours = Math.floor((totalSec % 86400) / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+
+            let text = '';
+            if (days > 0) text += days + ' ngày ';
+            text += String(hours).padStart(2, '0') + ':' + String(mins).padStart(2, '0') + ':' + String(secs).padStart(2, '0');
+            countdownEl.textContent = text;
+        }
+
+        // Progress Calculation
+        function updateProgress() {
+            syncPrintInfo();
+            const inputs = document.querySelectorAll('input[data-key], textarea[data-key], select[data-key]');
+            let filledCount = 0;
+            inputs.forEach(input => {
+                if (input.value.trim() !== '') filledCount++;
+            });
+
+            const total = inputs.length;
+            const percent = total > 0 ? Math.round((filledCount / total) * 100) : 0;
+
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+
+            if (progressBar) progressBar.style.width = percent + '%';
+            if (progressText) progressText.textContent = percent + '% hoàn thành';
+
+            autoSave();
+        }
+
+        // Save and Restore Data
+        function autoSave() {
+            if (isSubmitted) return;
+            const data = {
+                studentName: document.getElementById('studentName').value,
+                studentClass: document.getElementById('studentClass').value,
+                answers: {}
+            };
+
+            document.querySelectorAll('[data-key]').forEach(el => {
+                data.answers[el.dataset.key] = el.value;
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function restoreProgress() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+                if (!saved) return;
+
+                if (saved.studentName) document.getElementById('studentName').value = saved.studentName;
+                if (saved.studentClass) document.getElementById('studentClass').value = saved.studentClass;
+
+                if (saved.answers) {
+                    Object.keys(saved.answers).forEach(key => {
+                        const el = document.querySelector(`[data-key="${key}"]`);
+                        if (el) el.value = saved.answers[key];
+                    });
+                }
+            } catch (e) {
+                console.error('Lỗi khôi phục dữ liệu:', e);
+            }
+        }
+
+        function saveProgress() {
+            autoSave();
+            alert('💾 Bài làm của em đã được lưu thành công!');
+        }
+
+        // Submit Function
+        function submitWork() {
+            if (isSubmitted) return;
+
+            const name = document.getElementById('studentName').value.trim();
+            const className = document.getElementById('studentClass').value.trim();
+
+            if (!name || !className) {
+                alert('⚠️ Học sinh vui lòng điền đầy đủ Họ tên và Lớp trước khi nộp bài!');
+                return;
+            }
+
+            const savedDeadline = localStorage.getItem(DEADLINE_KEY) || new Date(DEFAULT_DEADLINE).toISOString();
+            if (Date.now() > new Date(savedDeadline).getTime()) {
+                alert('⛔ Đã hết thời gian nộp bài! Không thể gửi bài làm.');
+                return;
+            }
+
+            if (!confirm('Em chắc chắn muốn NỘP BÀI? Sau khi nộp, các câu trả lời sẽ được khóa.')) return;
+
+            isSubmitted = true;
+            autoSave();
+
+            document.body.classList.add('student-submitted');
+            document.querySelectorAll('input, textarea, select').forEach(el => el.disabled = true);
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '✅ ĐÃ NỘP BÀI';
+            submitBtn.className = 'px-4 py-2 bg-slate-500 text-white text-xs font-bold rounded-lg cursor-not-allowed';
+
+            // Generate Submission Receipt JSON
+            const receipt = {
+                studentName: name,
+                studentClass: className,
+                submittedAt: new Date().toLocaleString('vi-VN'),
+                answers: {}
+            };
+            document.querySelectorAll('[data-key]').forEach(el => {
+                receipt.answers[el.dataset.key] = el.value;
+            });
+
+            const blob = new Blob([JSON.stringify(receipt, null, 2)], { type: 'application/json' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `BaiLam_${name.replace(/\s+/g, '_')}_${className}.json`;
+            a.click();
+
+            alert('🎉 Nộp bài thành công! Bài làm của em đã được khóa và tạo file xác nhận.');
+        }
+
+        // Initialize Page Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            restoreProgress();
+
+            let savedDeadline = localStorage.getItem(DEADLINE_KEY);
+            if (!savedDeadline) {
+                savedDeadline = new Date(DEFAULT_DEADLINE).toISOString();
+            }
+            const d = new Date(savedDeadline);
+            if (!isNaN(d.getTime())) {
+                document.getElementById('deadlineInput').value = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+            }
+
+            document.querySelectorAll('input[data-key], textarea[data-key], select[data-key]').forEach(el => {
+                el.addEventListener('input', updateProgress);
+                el.addEventListener('change', updateProgress);
+            });
+
+            updateDeadlineUI();
+            updateProgress();
+            countdownTimer = setInterval(updateDeadlineUI, 1000);
+        });
+    </script>
+</body>
+</html>
